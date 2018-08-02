@@ -1,6 +1,7 @@
 package com.example.a7.animation;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
@@ -19,7 +20,8 @@ import android.widget.RelativeLayout;
 public class CustomView extends RelativeLayout {
     ImageView [] clouds = new ImageView[9];
     ImageView sumOrMoon;
-    private int weathericon = 3;
+    RelativeLayout backgroud;
+    private int weathericon = 12;
     public CustomView(Context context) {
         super(context);
         init();
@@ -61,7 +63,33 @@ public class CustomView extends RelativeLayout {
                 sumOrMoon.setVisibility(GONE);
                 break;
             case 5: //Dark cloud
-
+                break;
+                default:
+                    backgroud.setBackgroundColor(Color.parseColor("#061324"));
+                    sumOrMoon.setImageResource(R.drawable.ic_moon_circle);
+                    for(int i=0;i<9;i++){
+                        clouds[i].setImageResource(R.drawable.ic_cloud_circle_big_night);
+                    }
+                    clouds[0].setImageResource(R.drawable.ic_cloud_circle_night);
+                    clouds[2].setImageResource(R.drawable.ic_cloud_circle_night);
+                    clouds[8].setImageResource(R.drawable.ic_cloud_circle_night);
+                    break;
+        }
+        switch (weathericon) {
+            case 10: //Clear Night
+                for (int i = 0; i < 9; i++) {
+                    clouds[i].setVisibility(GONE);
+                }
+                break;
+            case 11: // Partly Cloudy
+                for (int i = 6; i < 9; i++) {
+                    clouds[i].setVisibility(GONE);
+                }
+                break;
+            case 12: // Mostly Cloudy and sun
+                break;
+            case 13: // Mostly Cloud
+                sumOrMoon.setVisibility(GONE);
                 break;
         }
         animateView();
@@ -148,5 +176,6 @@ public class CustomView extends RelativeLayout {
         this.clouds[7] = (ImageView) findViewById(R.id.iv_cloud8);
         this.clouds[8] = (ImageView) findViewById(R.id.iv_cloud9);
         this.sumOrMoon = findViewById(R.id.iv_sun);
+        this.backgroud = findViewById(R.id.rl_background);
     }
 }
