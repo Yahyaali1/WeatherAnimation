@@ -1,6 +1,7 @@
 package com.example.a7.animation;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -10,18 +11,24 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import java.util.Random;
 
 public class CustomView extends RelativeLayout {
     ImageView [] clouds = new ImageView[9];
-    ImageView sumOrMoon;
+    ImageView sumOrMoon, clearMoon;
     RelativeLayout backgroud;
-    private int weathericon = 12;
+    private Random r = new Random(123456789L);
+    private int viewWidth;
+    private int viewHeight;
+    int amount=1000, size=0, speed=0;
+    private int weathericon = 33;
     public CustomView(Context context) {
         super(context);
         init();
@@ -29,6 +36,7 @@ public class CustomView extends RelativeLayout {
 
     public CustomView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        attrs.getAttributeValue("android","layout_width");
         init();
     }
 
@@ -52,43 +60,100 @@ public class CustomView extends RelativeLayout {
                     clouds[i].setVisibility(GONE);
                 }
                 break;
-            case 2: // Partly Cloudy
+            case 3: // Partly Cloudy
                 for(int i=6;i<9;i++){
                     clouds[i].setVisibility(GONE);
                 }
                 break;
-            case 3: // Mostly Cloudy and sun
+            case 4|6: // Mostly Cloudy and sun
                 break;
-            case 4: // Mostly Cloud
+            case 7: // Mostly Cloud
                 sumOrMoon.setVisibility(GONE);
                 break;
-            case 5: //Dark cloud
+            case 8: //Dark cloud
+                backgroud.setBackgroundColor(getResources().getColor(R.color.background_dark));
+                sumOrMoon.setVisibility(GONE);
+                for(int i=0;i<9;i++){
+                    if (clouds[i].getTag().toString().equals("1"))
+                        clouds[i].setImageResource(R.drawable.ic_cloud_circle_night_big_light);
+                    else
+                        clouds[i].setImageResource(R.drawable.ic_cloud_circle_night_big_dark);
+                    if (i==0||i==2||i==8){
+                        if (clouds[i].getTag().toString().equals("1"))
+                            clouds[i].setImageResource(R.drawable.ic_cloud_circle_night_light);
+                        else
+                            clouds[i].setImageResource(R.drawable.ic_cloud_circle_night_dark);
+                    }
+                }
+                break;
+            case 12:
+                sumOrMoon.setVisibility(GONE);
+                amount = 800;
+                makeRain();
+                break;
+            case 13:
+                amount = 500;
+                makeRain();
+                break;
+            case 14:
+                for(int i=6;i<9;i++){
+                    clouds[i].setVisibility(GONE);
+                }
+                amount = 500;
+                makeRain();
+                break;
+            case 15:
+                backgroud.setBackgroundColor(getResources().getColor(R.color.background_dark));
+                sumOrMoon.setVisibility(GONE);
+                for(int i=0;i<9;i++){
+                    if (clouds[i].getTag().toString().equals("1"))
+                        clouds[i].setImageResource(R.drawable.ic_cloud_circle_night_big_light);
+                    else
+                        clouds[i].setImageResource(R.drawable.ic_cloud_circle_night_big_dark);
+                    if (i==0||i==2||i==8){
+                        if (clouds[i].getTag().toString().equals("1"))
+                            clouds[i].setImageResource(R.drawable.ic_cloud_circle_night_light);
+                        else
+                            clouds[i].setImageResource(R.drawable.ic_cloud_circle_night_dark);
+                    }
+                }
+                amount = 1200;
+                makeRain();
                 break;
                 default:
-                    backgroud.setBackgroundColor(Color.parseColor("#061324"));
+                    backgroud.setBackgroundColor( getResources().getColor(R.color.background_dark));
                     sumOrMoon.setImageResource(R.drawable.ic_moon_circle);
                     for(int i=0;i<9;i++){
-                        clouds[i].setImageResource(R.drawable.ic_cloud_circle_big_night);
+                        if (clouds[i].getTag().toString().equals("1"))
+                            clouds[i].setImageResource(R.drawable.ic_cloud_circle_night_big_light);
+                        else
+                            clouds[i].setImageResource(R.drawable.ic_cloud_circle_night_big_dark);
+                        if (i==0||i==2||i==8){
+                            if (clouds[i].getTag().toString().equals("1"))
+                                clouds[i].setImageResource(R.drawable.ic_cloud_circle_night_light);
+                            else
+                                clouds[i].setImageResource(R.drawable.ic_cloud_circle_night_dark);
+                        }
                     }
-                    clouds[0].setImageResource(R.drawable.ic_cloud_circle_night);
-                    clouds[2].setImageResource(R.drawable.ic_cloud_circle_night);
-                    clouds[8].setImageResource(R.drawable.ic_cloud_circle_night);
                     break;
         }
         switch (weathericon) {
-            case 10: //Clear Night
+            case 33|34: //Clear Night
                 for (int i = 0; i < 9; i++) {
                     clouds[i].setVisibility(GONE);
                 }
+                sumOrMoon.setVisibility(GONE);
+                clearMoon.setVisibility(VISIBLE);
+                clearMoonAnimation();
                 break;
-            case 11: // Partly Cloudy
+            case 35|36: // Partly Cloudy
                 for (int i = 6; i < 9; i++) {
                     clouds[i].setVisibility(GONE);
                 }
                 break;
-            case 12: // Mostly Cloudy and sun
+            case 38: // Mostly Cloudy and sun
                 break;
-            case 13: // Mostly Cloud
+            case 40: // Mostly Cloud
                 sumOrMoon.setVisibility(GONE);
                 break;
         }
@@ -100,7 +165,7 @@ public class CustomView extends RelativeLayout {
                 TranslateAnimation.ABSOLUTE, 0f,
                 TranslateAnimation.ABSOLUTE, 0f,
                 TranslateAnimation.RELATIVE_TO_PARENT, 0f,
-                TranslateAnimation.RELATIVE_TO_PARENT, 0.01f);
+                TranslateAnimation.RELATIVE_TO_PARENT, 0.03f);
         mAnimation1.setDuration(800);
         mAnimation1.setRepeatCount(-1);
         mAnimation1.setRepeatMode(Animation.REVERSE);
@@ -110,7 +175,7 @@ public class CustomView extends RelativeLayout {
                 TranslateAnimation.ABSOLUTE, 0f,
                 TranslateAnimation.ABSOLUTE, 0f,
                 TranslateAnimation.RELATIVE_TO_PARENT, 0f,
-                TranslateAnimation.RELATIVE_TO_PARENT, 0.01f);
+                TranslateAnimation.RELATIVE_TO_PARENT, 0.03f);
         mAnimation2.setDuration(1000);
         mAnimation2.setRepeatCount(-1);
         mAnimation2.setRepeatMode(Animation.REVERSE);
@@ -122,7 +187,7 @@ public class CustomView extends RelativeLayout {
                 TranslateAnimation.ABSOLUTE, 0f,
                 TranslateAnimation.ABSOLUTE, 0f,
                 TranslateAnimation.RELATIVE_TO_PARENT, 0f,
-                TranslateAnimation.RELATIVE_TO_PARENT, 0.01f);
+                TranslateAnimation.RELATIVE_TO_PARENT, 0.03f);
         mAnimation2.setDuration(1300);
         mAnimation2.setRepeatCount(-1);
         mAnimation2.setRepeatMode(Animation.REVERSE);
@@ -145,23 +210,6 @@ public class CustomView extends RelativeLayout {
 
         rotateAnimation.setRepeatCount(Animation.INFINITE);
         rotateAnimation.setRepeatMode(Animation.REVERSE);
-
-        //#061324
-//        Animation fadeIn = new AlphaAnimation(0, 1);
-//        fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
-//        fadeIn.setDuration(1000);
-//        fadeIn.setRepeatCount(-1);
-//
-//        Animation fadeOut = new AlphaAnimation(1, 0);
-//        fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
-//        fadeOut.setStartOffset(1000);
-//        fadeOut.setDuration(1000);
-//        fadeOut.setRepeatCount(-1);
-//
-//        AnimationSet animation = new AnimationSet(false); //change to false
-//        animation.addAnimation(fadeIn);
-//        animation.addAnimation(fadeOut);
-//        animation.addAnimation(rotateAnimation);
         sumOrMoon.setAnimation(rotateAnimation);
     }
 
@@ -176,6 +224,59 @@ public class CustomView extends RelativeLayout {
         this.clouds[7] = (ImageView) findViewById(R.id.iv_cloud8);
         this.clouds[8] = (ImageView) findViewById(R.id.iv_cloud9);
         this.sumOrMoon = findViewById(R.id.iv_sun);
+        this.clearMoon = (ImageView) findViewById(R.id.iv_clear_moon);
         this.backgroud = findViewById(R.id.rl_background);
+    }
+    public void clearMoonAnimation(){
+        Animation rotateAnimation = new RotateAnimation(0.0f, 360.0f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+                0.5f);
+        rotateAnimation.setDuration(25000);
+        rotateAnimation.setRepeatCount(Animation.INFINITE);
+        rotateAnimation.setRepeatMode(Animation.RESTART);
+
+        clearMoon.setAnimation(rotateAnimation);
+    }
+    public void makeRain(){
+        int width =  Resources.getSystem().getDisplayMetrics().widthPixels;
+        int height =  Resources.getSystem().getDisplayMetrics().heightPixels;
+        int unit=1;
+        for ( int i =0;i<amount;i++){
+            Animation fadeOut = new AlphaAnimation(1, 0);
+            fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
+            fadeOut.setStartOffset(1000);
+            fadeOut.setDuration(1000+unit);
+            fadeOut.setRepeatMode(2);
+            fadeOut.setRepeatCount(-1);
+            AnimationSet animation = new AnimationSet(false); //change to false
+            animation.addAnimation(fadeOut);
+            TranslateAnimation mAnimation2 = new TranslateAnimation(
+                    TranslateAnimation.RELATIVE_TO_PARENT, 0f,
+                    TranslateAnimation.RELATIVE_TO_PARENT, 0f,
+                    TranslateAnimation.RELATIVE_TO_PARENT, 0f,
+                    TranslateAnimation.RELATIVE_TO_PARENT, 1f);
+            mAnimation2.setDuration(2300+unit);
+            mAnimation2.setRepeatCount(-1);
+            mAnimation2.setRepeatMode(Animation.RESTART);
+            mAnimation2.setInterpolator(new LinearInterpolator());
+            animation.addAnimation(mAnimation2);
+            int i1 = r.nextInt(width - 0 + 1)+0;
+            int i2 = r.nextInt(height - 0 + 1);
+            ImageView imageView = new ImageView(this.getContext());
+            imageView.setImageResource(R.drawable.ic_drop);
+            imageView.setX(i1);
+            imageView.setY(i2);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(25, 50);
+            imageView.setLayoutParams(layoutParams);
+            imageView.setAnimation(animation);
+            this.addView(imageView);
+            unit=unit+50;
+        }
+    }
+    protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld){
+        super.onSizeChanged(xNew, yNew, xOld, yOld);
+        viewWidth = xNew;
+        viewHeight = yNew;
+        //init();
     }
 }
