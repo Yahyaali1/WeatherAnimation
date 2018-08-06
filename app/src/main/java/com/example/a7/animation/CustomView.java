@@ -242,31 +242,28 @@ public class CustomView extends RelativeLayout {
         clearMoon.setAnimation(rotateAnimation);
     }
     public void makeWind(){
-        int width =  Resources.getSystem().getDisplayMetrics().widthPixels;
         final int height =  Resources.getSystem().getDisplayMetrics().heightPixels;
         int unit=1;
         for ( int i =0;i<amount;i++){
-            float i2 = r.nextFloat()*(1f - -1f)+-1f;
-            Log.d("Tested", String.valueOf(i2));
-            AnimationSet animation = new AnimationSet(false); //change to false
-            TranslateAnimation mAnimation2 = new TranslateAnimation(
+            float yOffsetVal = r.nextFloat()*(1f - -1f)+-1f;
+            Log.d("Tested", String.valueOf(yOffsetVal));
+            TranslateAnimation translateAnimation = new TranslateAnimation(
                     TranslateAnimation.RELATIVE_TO_PARENT, 0f,
                     TranslateAnimation.RELATIVE_TO_PARENT, 1f,
                     TranslateAnimation.RELATIVE_TO_PARENT, 0f,
-                    TranslateAnimation.RELATIVE_TO_PARENT, i2);
-            mAnimation2.setDuration(2300+unit);
-            mAnimation2.setRepeatCount(-1);
-            mAnimation2.setRepeatMode(Animation.RESTART);
-            mAnimation2.setInterpolator(new LinearInterpolator());
-            animation.addAnimation(mAnimation2);
-            final int i1 = r.nextInt(height)+1;
+                    TranslateAnimation.RELATIVE_TO_PARENT, yOffsetVal);
+            translateAnimation.setDuration(2300+unit);
+            translateAnimation.setRepeatCount(-1);
+            translateAnimation.setRepeatMode(Animation.RESTART);
+            translateAnimation.setInterpolator(new LinearInterpolator());
+            final int startingYVal = r.nextInt(height)+1;
             final ImageView imageView = new ImageView(this.getContext());
             imageView.setImageResource(R.drawable.ic_drop);
             imageView.setX(0);
-            imageView.setY(i1);
+            imageView.setY(startingYVal);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(25, 50);
             imageView.setLayoutParams(layoutParams);
-            mAnimation2.setAnimationListener(new Animation.AnimationListener() {
+            translateAnimation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
 
@@ -274,18 +271,17 @@ public class CustomView extends RelativeLayout {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    Log.d("Tested","End");
+
                 }
 
                 @Override
                 public void onAnimationRepeat(Animation animation) {
-                    Log.d("Tested","Repeat");
                     int i1 = r.nextInt(height)+1;
                     imageView.setX(0);
                     imageView.setY(i1);
                 }
             });
-            imageView.startAnimation(animation);
+            imageView.startAnimation(translateAnimation);
             this.addView(imageView);
             unit=unit+50;
         }
@@ -330,6 +326,5 @@ public class CustomView extends RelativeLayout {
         super.onSizeChanged(xNew, yNew, xOld, yOld);
         viewWidth = xNew;
         viewHeight = yNew;
-        //init();
     }
 }
