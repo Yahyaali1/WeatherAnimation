@@ -243,10 +243,10 @@ public class CustomView extends RelativeLayout {
     }
     public void makeWind(){
         int width =  Resources.getSystem().getDisplayMetrics().widthPixels;
-        int height =  Resources.getSystem().getDisplayMetrics().heightPixels;
+        final int height =  Resources.getSystem().getDisplayMetrics().heightPixels;
         int unit=1;
         for ( int i =0;i<amount;i++){
-            float i2 = r.nextFloat()*(1f + -1f);
+            float i2 = r.nextFloat()*(1f - -1f)+-1f;
             Log.d("Tested", String.valueOf(i2));
             AnimationSet animation = new AnimationSet(false); //change to false
             TranslateAnimation mAnimation2 = new TranslateAnimation(
@@ -259,14 +259,33 @@ public class CustomView extends RelativeLayout {
             mAnimation2.setRepeatMode(Animation.RESTART);
             mAnimation2.setInterpolator(new LinearInterpolator());
             animation.addAnimation(mAnimation2);
-            int i1 = r.nextInt(height - 0 + 1)+0;
+            final int i1 = r.nextInt(height)+1;
             final ImageView imageView = new ImageView(this.getContext());
             imageView.setImageResource(R.drawable.ic_drop);
             imageView.setX(0);
             imageView.setY(i1);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(25, 50);
             imageView.setLayoutParams(layoutParams);
-            imageView.setAnimation(animation);
+            mAnimation2.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    Log.d("Tested","End");
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    Log.d("Tested","Repeat");
+                    int i1 = r.nextInt(height)+1;
+                    imageView.setX(0);
+                    imageView.setY(i1);
+                }
+            });
+            imageView.startAnimation(animation);
             this.addView(imageView);
             unit=unit+50;
         }
