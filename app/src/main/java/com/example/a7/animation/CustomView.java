@@ -28,7 +28,7 @@ public class CustomView extends RelativeLayout {
     private int viewWidth;
     private int viewHeight;
     int amount=1000, size=0, speed=0;
-    private int weathericon = 33;
+    private int weathericon = 32;
     public CustomView(Context context) {
         super(context);
         init();
@@ -120,6 +120,10 @@ public class CustomView extends RelativeLayout {
                 amount = 1200;
                 makeRain();
                 break;
+            case 32:
+                amount = 5;
+                makeWind();
+                break;
                 default:
                     backgroud.setBackgroundColor( getResources().getColor(R.color.background_dark));
                     sumOrMoon.setImageResource(R.drawable.ic_moon_circle);
@@ -138,7 +142,7 @@ public class CustomView extends RelativeLayout {
                     break;
         }
         switch (weathericon) {
-            case 33|34: //Clear Night
+            case 33: //Clear Night
                 for (int i = 0; i < 9; i++) {
                     clouds[i].setVisibility(GONE);
                 }
@@ -214,17 +218,17 @@ public class CustomView extends RelativeLayout {
     }
 
     private void findViews() {
-        this.clouds[0] = (ImageView) findViewById(R.id.iv_cloud1);
-        this.clouds[1] = (ImageView) findViewById(R.id.iv_cloud2);
-        this.clouds[2] = (ImageView) findViewById(R.id.iv_cloud3);
-        this.clouds[3]= (ImageView) findViewById(R.id.iv_cloud4);
-        this.clouds[4] = (ImageView) findViewById(R.id.iv_cloud5);
-        this.clouds[5] = (ImageView) findViewById(R.id.iv_cloud6);
-        this.clouds[6]= (ImageView) findViewById(R.id.iv_cloud7);
-        this.clouds[7] = (ImageView) findViewById(R.id.iv_cloud8);
-        this.clouds[8] = (ImageView) findViewById(R.id.iv_cloud9);
+        this.clouds[0] = findViewById(R.id.iv_cloud1);
+        this.clouds[1] = findViewById(R.id.iv_cloud2);
+        this.clouds[2] = findViewById(R.id.iv_cloud3);
+        this.clouds[3] = findViewById(R.id.iv_cloud4);
+        this.clouds[4] = findViewById(R.id.iv_cloud5);
+        this.clouds[5] = findViewById(R.id.iv_cloud6);
+        this.clouds[6] = findViewById(R.id.iv_cloud7);
+        this.clouds[7] = findViewById(R.id.iv_cloud8);
+        this.clouds[8] = findViewById(R.id.iv_cloud9);
         this.sumOrMoon = findViewById(R.id.iv_sun);
-        this.clearMoon = (ImageView) findViewById(R.id.iv_clear_moon);
+        this.clearMoon = findViewById(R.id.iv_clear_moon);
         this.backgroud = findViewById(R.id.rl_background);
     }
     public void clearMoonAnimation(){
@@ -236,6 +240,36 @@ public class CustomView extends RelativeLayout {
         rotateAnimation.setRepeatMode(Animation.RESTART);
 
         clearMoon.setAnimation(rotateAnimation);
+    }
+    public void makeWind(){
+        int width =  Resources.getSystem().getDisplayMetrics().widthPixels;
+        int height =  Resources.getSystem().getDisplayMetrics().heightPixels;
+        int unit=1;
+        for ( int i =0;i<amount;i++){
+            float i2 = r.nextFloat()*(1f + -1f);
+            Log.d("Tested", String.valueOf(i2));
+            AnimationSet animation = new AnimationSet(false); //change to false
+            TranslateAnimation mAnimation2 = new TranslateAnimation(
+                    TranslateAnimation.RELATIVE_TO_PARENT, 0f,
+                    TranslateAnimation.RELATIVE_TO_PARENT, 1f,
+                    TranslateAnimation.RELATIVE_TO_PARENT, 0f,
+                    TranslateAnimation.RELATIVE_TO_PARENT, i2);
+            mAnimation2.setDuration(2300+unit);
+            mAnimation2.setRepeatCount(-1);
+            mAnimation2.setRepeatMode(Animation.RESTART);
+            mAnimation2.setInterpolator(new LinearInterpolator());
+            animation.addAnimation(mAnimation2);
+            int i1 = r.nextInt(height - 0 + 1)+0;
+            final ImageView imageView = new ImageView(this.getContext());
+            imageView.setImageResource(R.drawable.ic_drop);
+            imageView.setX(0);
+            imageView.setY(i1);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(25, 50);
+            imageView.setLayoutParams(layoutParams);
+            imageView.setAnimation(animation);
+            this.addView(imageView);
+            unit=unit+50;
+        }
     }
     public void makeRain(){
         int width =  Resources.getSystem().getDisplayMetrics().widthPixels;
