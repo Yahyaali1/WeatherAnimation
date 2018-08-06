@@ -1,5 +1,9 @@
 package com.example.a7.animation;
 
+import android.animation.Animator;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -28,7 +32,7 @@ public class CustomView extends RelativeLayout {
     private int viewWidth;
     private int viewHeight;
     int amount=1000, size=0, speed=0;
-    private int weathericon = 32;
+    private int weathericon = 12;
     public CustomView(Context context) {
         super(context);
         init();
@@ -320,7 +324,61 @@ public class CustomView extends RelativeLayout {
             imageView.setAnimation(animation);
             this.addView(imageView);
             unit=unit+50;
+            setFlash();
         }
+
+    }
+    public void setFlash(){
+
+        int count=2;
+        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(backgroud,
+                "backgroundColor",
+                new ArgbEvaluator(), 0x000000,
+                0xffffffff);
+        backgroundColorAnimator.setDuration(300);
+        backgroundColorAnimator.setRepeatMode(ValueAnimator.RESTART);
+        backgroundColorAnimator.setStartDelay(1000);
+        backgroundColorAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        backgroundColorAnimator.addListener(new Animator.AnimatorListener() {
+            int count=0;
+            int flashLimt=5;
+            int limit= r.nextInt(flashLimt - 0 + 1)+1;
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+
+
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+                count=count+1;
+
+
+                if(count>=limit){
+                    backgroundColorAnimator.setStartDelay(5000);
+
+                    count=0;
+                    limit= r.nextInt(flashLimt - 0 + 1)+1;
+
+                }
+
+                backgroundColorAnimator.start();
+            }
+        });
+        backgroundColorAnimator.start();
+
+
     }
     protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld){
         super.onSizeChanged(xNew, yNew, xOld, yOld);

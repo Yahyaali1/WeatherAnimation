@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.example.a7.animation.test.customViewRain;
 
 public class MainActivity extends AppCompatActivity {
 
