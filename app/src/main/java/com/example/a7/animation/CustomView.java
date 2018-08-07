@@ -32,7 +32,7 @@ public class CustomView extends RelativeLayout {
     private int viewWidth;
     private int viewHeight;
     int amount=1000, size=0, speed=0;
-    private int weathericon = 12;
+    private int weathericon = 333;
     public CustomView(Context context) {
         super(context);
         init();
@@ -125,7 +125,7 @@ public class CustomView extends RelativeLayout {
                 makeRain();
                 break;
             case 32:
-                amount = 5;
+                amount = 50;
                 makeWind();
                 break;
                 default:
@@ -262,10 +262,19 @@ public class CustomView extends RelativeLayout {
             translateAnimation.setInterpolator(new LinearInterpolator());
             final int startingYVal = r.nextInt(height)+1;
             final ImageView imageView = new ImageView(this.getContext());
-            imageView.setImageResource(R.drawable.ic_drop);
+            int rand = r.nextInt(2-0)+1;
+            switch (rand){
+                case 1:
+                    imageView.setImageResource(R.drawable.ic_leaf);
+                   break;
+                case 2:
+                    imageView.setImageResource(R.drawable.ic_leaf_m);
+
+
+            }
             imageView.setX(0);
             imageView.setY(startingYVal);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(25, 50);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(50, 50);
             imageView.setLayoutParams(layoutParams);
             translateAnimation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
